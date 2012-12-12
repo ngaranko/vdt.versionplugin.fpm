@@ -1,4 +1,4 @@
 vdt.versionplugin.fpm
 =====================
 
-vdt.version plugin that uses debianize
+vdt.version plugin that uses fpm
