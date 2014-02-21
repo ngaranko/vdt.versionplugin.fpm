@@ -5,13 +5,6 @@ import subprocess
 log = logging.getLogger('vdt.versionplugin.fpm.package')
 
 
-def set_version(version):
-    """
-    Proxy method
-    Keeps already existing version variable in place
-    """
-    return version
-
 def build_package(version):
     """
     Build package with fpm.
