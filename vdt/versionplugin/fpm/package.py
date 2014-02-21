@@ -7,6 +7,8 @@ log = logging.getLogger('vdt.versionplugin.fpm.package')
 
 def set_version(version):
     """
+    Proxy method
+    Keeps already existing version variable in place
     """
     return version
 
@@ -15,11 +17,25 @@ def build_package(version):
     Build package with fpm.
     """
     log.debug("Building version {0} with fpm.".format(version))
-    #with version.checkout_tag:
-    cmd = ['fpm', '-s', 'dir', '--version=%s' % version] + version.extra_args
-    log.debug("Running command %s" % " ".join(cmd))
-    subprocess.check_call(cmd)
 
+    if "--no-checkout" in version.extra_args:
+        # No tag checkout needed.
+        args = version.extra_args
+        del(args[args.index("--no-checkout")])
+        call_fpm(version, args)
+    else:
+        # Fallback to old functionality
+        with version.checkout_tag:
+            call_fpm(version)
+
+def call_fpm(version, extra_args=None):
+    """
+    Calls `fpm` with conditional extra arguments
+    """
+    cmd = ['fpm', '-s', 'dir', '--version=%s' % version]
+    cmd.extend(extra_args or version.extra_args)
+    log.debug("Running command '%s'" % " ".join(cmd))
+    subprocess.check_call(cmd)
 
 def set_package_version(version):
     """
@@ -28,4 +44,3 @@ def set_package_version(version):
     that code should go here
     """
     log.debug("set_package_version is not implemented for fpm")
-
